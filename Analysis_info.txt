@@ -22,4 +22,4 @@ The analysis performed by the application yields valuable insights into the perf
 - Prioritize optimization efforts based on the most significant contributors to overall runtime.
 
 **Conclusion:**
-In conclusion, the profiling data analysis application provides a comprehensive solution for analyzing performance data and identifying areas for optimization. By adhering to standards and guidelines in software development and data analysis, the application delivers accurate and actionable insights that can improve the efficiency and performance of software systems.
+In conclusion, the profiling data analysis application provides a comprehensive solution for analyzing performance data and identifying areas for optimization. The application delivers accurate and actionable insights that can improve the efficiency and performance of software systems.
