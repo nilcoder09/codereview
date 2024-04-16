@@ -30,9 +30,8 @@ def upload_file():
     if file.filename == '':
         return 'No selected file'
 
-    # Process the uploaded file (e.g., analyze its content)
+
     content = file.read()  # Read the content of the uploaded file use
-    # Add your analysis logic here
     profile_data = profile_code(content)
     print(profile_data)
     #df = parse_profile_data(profile_data)
