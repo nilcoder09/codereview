@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Profiling and Performance Analysis Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        #file {
+            margin-top: 10px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #visualization {
+            display: flex;
+            width: 100%;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Code Profiling and Performance Analysis Tool</h1>
+
+        <div>
+            <h2>Upload Code File</h2>
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="file">
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+
+        <div>
+            <h2>Performance Metrics</h2>
+            <p>Display performance metrics and analysis results</p>
+            <pre>{{profile_data}}</pre>
+        </div>
+
+        <div>
+            <h2>Interactive Visualizations</h2>
+            <div id="visualization">
+                <!-- Visualizations will be displayed here -->
+                {% if plot_paths %}
+                    <h2>Cumulative Time by Function</h2>
+                        <img src="{{ plot_paths[0] }}" alt="Cumulative Time by Function" style="max-width: 500px">
+
+                    <h2>Total Time by Function</h2>
+                        <img src="{{ plot_paths[1] }}" alt="Total Time by Function" style="max-width: 500px">
+
+                    <h2>Function Call Counts by Function</h2>
+                        <img src="{{ plot_paths[2] }}" alt="Function Call Counts by Function" style="max-width: 500px">
+                {% else %}
+                    <p>No profiling results available</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <h2>Performance Summary</h2>
+            <p>Summary of performance bottlenecks and inefficiencies:</p>
+            <pre>{{summary}}</pre>
+        </div>
+
+        <div>
+            <h2>Optimization Recommendations</h2>
+            <p>Recommendations for optimizing code based on analysis:</p>
+        </div>
+
+        <div>
+            <h2>Uploaded Code</h2>
+            <pre>{{content}}</pre>
+        </div>
+
+    </div>
+</body>
+
+</html>
