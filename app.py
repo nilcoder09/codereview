@@ -33,13 +33,15 @@ def upload_file():
 
     content = file.read()  # Read the content of the uploaded file use
     profile_data = profile_code(content)
+    lines = content.split(b'\n')
     print(profile_data)
     #df = parse_profile_data(profile_data)
     df_cumtime, df_tottime, df_ncalls = parse_profile_data(profile_data)
     # Create visualizations
     plot_paths = create_visualizations(df_cumtime, df_tottime, df_ncalls)
     summary = extract_summary(df_cumtime, df_tottime, df_ncalls)
-    return render_template('index.html', profile_data=profile_data, content=content, plot_paths=plot_paths, summary=summary)
+    formatted_summary = format_summary(summary)
+    return render_template('index.html', profile_data=profile_data, lines=lines, content=content, plot_paths=plot_paths, summary=summary, formatted_summary=formatted_summary)
 
 
 def profile_code(code):
@@ -122,7 +124,6 @@ def extract_summary(df_cumtime, df_tottime, df_ncalls):
             df_tottime[column] = pd.to_numeric(df_tottime[column], errors='coerce')
             df_ncalls[column] = pd.to_numeric(df_ncalls[column], errors='coerce')
 
-        # Drop rows with NaN values after conversion
         df_cumtime.dropna(inplace=True)
         df_tottime.dropna(inplace=True)
         df_ncalls.dropna(inplace=True)
@@ -159,6 +160,30 @@ def extract_summary(df_cumtime, df_tottime, df_ncalls):
     except Exception as e:
         return f"Error: {str(e)}"
 
+
+def format_summary(summary):
+    formatted_summary = []
+
+    # Total Cumulative Time
+    formatted_summary.append("Performance Summary")
+    formatted_summary.append(f"Total Cumulative Time: {summary['total_cumtime']:.3f} seconds")
+
+    # Total Total Time
+    formatted_summary.append(f"Total Total Time: {summary['total_tottime']:.3f} seconds")
+
+    # High Cumulative Time Functions
+    formatted_summary.append("\nHigh Cumulative Time Functions:")
+    formatted_summary.append(summary['high_cumtime_functions'].to_string(index=False))
+
+    # High Total Time Functions
+    formatted_summary.append("\nHigh Total Time Functions:")
+    formatted_summary.append(summary['high_tottime_functions'].to_string(index=False))
+
+    # High Call Count Functions
+    formatted_summary.append("\nHigh Call Count Functions:")
+    formatted_summary.append(summary['high_call_count_functions'].to_string(index=False))
+
+    return "\n".join(formatted_summary)
 
 if __name__ == '__main__':
     app.run(debug=True)
