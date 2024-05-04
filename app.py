@@ -9,10 +9,14 @@ import pandas as pd
 import base64
 import seaborn as sns
 import matplotlib
+import os
+import requests, jsonify
+import google.generativeai as genai
+
 matplotlib.use('agg')
+genai.configure(api_key="YOUR_GEMINI_API_KEY_HERE")
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def index():
@@ -41,7 +45,8 @@ def upload_file():
     plot_paths = create_visualizations(df_cumtime, df_tottime, df_ncalls)
     summary = extract_summary(df_cumtime, df_tottime, df_ncalls)
     formatted_summary = format_summary(summary)
-    return render_template('index.html', profile_data=profile_data, lines=lines, content=content, plot_paths=plot_paths, summary=summary, formatted_summary=formatted_summary)
+    sugg = suggest(profile_data, formatted_summary)
+    return render_template('index.html', profile_data=profile_data, sugg=sugg, lines=lines, content=content,  plot_paths=plot_paths, summary=summary, formatted_summary=formatted_summary, file=file)
 
 
 def profile_code(code):
@@ -70,12 +75,6 @@ def parse_profile_data(profile_data):
     df_ncalls = pd.DataFrame(data_ncalls, columns=columns)
 
     return df_cumtime, df_tottime, df_ncalls
-    # Parse the profiling data into a DataFrame
-    # profile_list = profile_data.strip().split('\n')
-    # data = [line.split(None, 5) for line in profile_list[1:]]
-    # columns = ['ncalls', 'tottime', 'percall', 'cumtime', 'percall', 'filename:lineno(function)']
-    # df = pd.DataFrame(data, columns=columns)
-    # return df
 
 
 def create_visualizations(df_cumtime, df_tottime, df_ncalls):
@@ -159,6 +158,13 @@ def extract_summary(df_cumtime, df_tottime, df_ncalls):
         return summary
     except Exception as e:
         return f"Error: {str(e)}"
+
+
+def suggest(profile_data, formatted_summary):
+
+    model = genai.GenerativeModel('gemini-pro')
+    response = model.generate_content('Given the profiling data table for a python code analyze and suggest optimization recommendation and other thing that can be done to improve code performance'+profile_data+formatted_summary)
+    return response.text
 
 
 def format_summary(summary):
